@@ -1,5 +1,5 @@
 {
-    "name": "windy-plugin-examples",
+    "name": "windy-plugin-strateole2",
     "version": "0.5.0",
     "description": "Windy plugin system enables anyone, with basic knowledge of Javascript to enhance Windy with new functionality (default desc).",
     "main": "dist/plugin.js",
@@ -11,9 +11,9 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/windycom/windy-plugins"
+        "url": "https://github.com/matthewjoy-prog/windy-plugins"
     },
-    "author": "Windyty, S.E.",
+    "author": "LMD",
     "license": "MIT",
     "dependencies": {
         "@babel/core": "^7.1.2",

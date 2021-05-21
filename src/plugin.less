@@ -1,7 +1,58 @@
 @import 'dev/variables.less';
 
-.onwindy-plugin-myname {
+@widthOfMyPlugin: 400px;
+
+.onwindy-plugin-strateole2 {
+    .left-border {
+        left: @widthOfMyPlugin;
+    }
+
+    #search {
+        display: none;
+    }
 }
 
-#windy-plugin-myname {
+#windy-plugin-strateole2 {
+    width: @widthOfMyPlugin;
+    height: 100%;
+
+    .plugin-content {
+        padding: 20px 15px 15px 15px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .multiselect {
+	  width: 200px;
+	}
+
+	.selectBox {
+	  position: relative;
+	}
+
+	.selectBox select {
+	  width: 100%;
+	  font-weight: bold;
+	}
+
+	.overSelect {
+	  position: absolute;
+	  left: 0;
+	  right: 0;
+	  top: 0;
+	  bottom: 0;
+	}
+
+	#checkboxes {
+	  display: none;
+	  border: 1px #dadada solid;
+	}
+
+	#checkboxes label {
+	  display: block;
+	}
+
+	#checkboxes label:hover {
+	  background-color: #1e90ff;
+	}
 }

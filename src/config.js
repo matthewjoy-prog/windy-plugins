@@ -8,7 +8,21 @@ module.exports = {
 
     // List of external libraries, that should be loaded before
     // your plugin is even mounted to the page
-    // dependencies: ['https://unpkg.com/d3@5.7.0/dist/d3.min.js']
+    dependencies: ['https://cdnjs.cloudflare.com/ajax/libs/leaflet-omnivore/0.3.4/leaflet-omnivore.min.js'],
+
+    /*
+        List of class names that will be attached to your
+        plugin upon mounting
+    */
+    className: 'plugin-lhpane plugin-mobile-fullscreen',
+
+    /*
+        Identifier of a pane, where your plugin will reside.
+        Since we want to have only one pane on left side,
+        this string will guarantee, that all other plugins
+        on the left side will be closed.
+    */
+    exclusive: 'lhpane',
 
     // List of classnames that will be attached to your plugin upon mounting
     // className: 'plugin-lhpane plugin-mobile-fullscreen',
