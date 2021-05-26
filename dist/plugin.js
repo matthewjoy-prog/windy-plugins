@@ -7,14 +7,14 @@
 W.loadPlugin(
 /* Mounting options */
 {
-  "name": "windy-plugin-test",
+  "name": "windy-plugin-strateole-lmd",
   "version": "0.5.0",
   "author": "LMD",
   "repository": {
     "type": "git",
     "url": "https://github.com/matthewjoy-prog/windy-plugins"
   },
-  "description": "Windy plugin system enables anyone, with basic knowledge of Javascript to enhance Windy with new functionality (default desc).",
+  "description": "Windy plugin for strateole2",
   "displayName": "My super plugin",
   "hook": "menu",
   "dependencies": ["https://cdnjs.cloudflare.com/ajax/libs/leaflet-omnivore/0.3.4/leaflet-omnivore.min.js"],
@@ -22,9 +22,9 @@ W.loadPlugin(
   "exclusive": "lhpane"
 },
 /* HTML */
-'<div class="mobile-header"> <div class="mh-closing-x iconfont clickable" data-do="rqstClose,windy-plugin-test">}</div> This is the title for mobile devices. </div> <div class="plugin-content"> <img src="https://www7.obs-mip.fr/wp-content-aeris/uploads/sites/51/2019/10/cropped-Logo-Strateole-2logo_Strateole2_75x75px_web.png" alt="logo"> <h2>Plugin Strateole 2</h2> <ul> <li class="clickable-size" data-ref="wms1">wms1</li> <li class="clickable-size" data-ref="wms2">wms2</li> </ul> <div class="multiselect"> <div class="selectBox" data-ref="checkboxes"> <select> <option>Select an option</option> </select> <div class="overSelect"></div> </div> <div id="checkboxes"> <label> <input type="checkbox" id="1" class="sat" data-ref="sat1">Trajectoire 1 (json)</label> <label> <input type="checkbox" id="2" class="sat" data-ref="sat2">Trajectoire 2 (kml)</label> <label> <input type="checkbox" id="3" class="sat" data-ref="sat3">Baleine et requin (kml)</label> </div> </div> <button data-ref="clear">Clear Map</button> </div>',
+'<div class="mobile-header"> <div class="mh-closing-x iconfont clickable" data-do="rqstClose,windy-plugin-test">}</div> This is the title for mobile devices. </div> <div class="plugin-content"> <img src="https://www7.obs-mip.fr/wp-content-aeris/uploads/sites/51/2019/10/cropped-Logo-Strateole-2logo_Strateole2_75x75px_web.png" alt="logo"> <h2>Plugin Strateole 2</h2> <div id="bouton"> <ul> <li class="clickable-size" data-ref="wms1">wms1</li> <li class="clickable-size" data-ref="wms2">wms2</li> <li class="clickable-size" data-ref="geo">geo</li> </ul> </div> <div id="date"> <input id="date" name="date" value="" type="date"> <input id="time" name="time" value="" type="time"> </div> <div class="multiselect"> <div class="selectBox" data-ref="checkboxes"> <select> <option>Select an option</option> </select> <div class="overSelect"></div> </div> <div id="checkboxes"> <label> <input type="checkbox" id="1" class="sat" data-ref="sat1">Trajectoire 1 (json)</label> <label> <input type="checkbox" id="2" class="sat" data-ref="sat2">Trajectoire 2 (kml)</label> <label> <input type="checkbox" id="3" class="sat" data-ref="sat3">Baleine et requin (kml)</label> </div> </div> <button data-ref="clear">Clear Map</button> </div>',
 /* CSS */
-'.onwindy-plugin-test .left-border{left:400px}.onwindy-plugin-test #search{display:none}#windy-plugin-test{width:400px;height:100%}#windy-plugin-test .plugin-content{padding:20px 15px 15px 15px;font-size:14px;line-height:1.6}#windy-plugin-test .multiselect{width:200px}#windy-plugin-test .selectBox{position:relative}#windy-plugin-test .selectBox select{width:100%;font-weight:bold}#windy-plugin-test .overSelect{position:absolute;left:0;right:0;top:0;bottom:0}#windy-plugin-test #checkboxes{display:none;border:1px #dadada solid}#windy-plugin-test #checkboxes label{display:block}#windy-plugin-test #checkboxes label:hover{background-color:#1e90ff}',
+'.onwindy-plugin-strateole-lmd .left-border{left:400px}.onwindy-plugin-strateole-lmd #search{display:none}#windy-plugin-strateole-lmd{width:400px;height:100%}#windy-plugin-strateole-lmd .plugin-content{padding:20px 15px 15px 15px;font-size:14px;line-height:1.6}#windy-plugin-strateole-lmd .multiselect{width:200px}#windy-plugin-strateole-lmd .selectBox{position:relative}#windy-plugin-strateole-lmd .selectBox select{width:100%;font-weight:bold}#windy-plugin-strateole-lmd .overSelect{position:absolute;left:0;right:0;top:0;bottom:0}#windy-plugin-strateole-lmd #checkboxes{display:none;border:1px #dadada solid}#windy-plugin-strateole-lmd #checkboxes label{display:block}#windy-plugin-strateole-lmd #checkboxes label:hover{background-color:#1e90ff}',
 /* Constructor */
 function () {
   var store = W.require('store');
@@ -98,8 +98,12 @@ function () {
 
   var geoJSON = null;
 
+  this.refs.geo.onclick = function () {
+    return loadGeoJson('http://localhost/stage/projet/v1/map.geojson');
+  };
+
   var loadGeoJson = function loadGeoJson(url) {
-    removeFpl();
+    removeGeoJson();
     fetch(url).then(function (response) {
       return response.json();
     }).then(function (result) {
@@ -215,6 +219,38 @@ function () {
       element.checked = false;
     });
   }
+
+  function setDate() {
+    var date = document.getElementsByName('date')[0].value;
+    var hour = document.getElementsByName('time')[0].value;
+    var dateSplit = date.split('-');
+    var hourSplit = hour.split(':');
+    console.log(hourSplit);
+    var timestamp = new Date(dateSplit[0], dateSplit[1] - 1, dateSplit[2], hourSplit[0], hourSplit[1]).getTime() + 1;
+    console.log(timestamp);
+    store.set('timestamp', timestamp);
+  }
+
+  function initDate() {
+    var dateInit = new Date();
+    var currentDate = dateInit.toISOString().substring(0, 10);
+    document.getElementsByName('date')[0].value = currentDate;
+
+    document.getElementById('date').onchange = function () {
+      console.log('la');
+      setDate();
+    };
+
+    var currentTime = dateInit.toISOString().substring(11, 16);
+    document.getElementById('time').value = currentTime;
+
+    document.getElementsByName('time')[0].onchange = function () {
+      console.log("ici");
+      setDate();
+    };
+  }
+
+  initDate();
 
   this.refs.clear.onclick = function () {
     return clear();

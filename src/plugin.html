@@ -1,6 +1,5 @@
 <plugin>
 	<script>
-
 	</script>
     <div class="mobile-header">
         <!-- For the closing arrow of the mobile header, replace windy-plugin-examples with the name of your plugin:
@@ -14,10 +13,19 @@
     	<img src="https://www7.obs-mip.fr/wp-content-aeris/uploads/sites/51/2019/10/cropped-Logo-Strateole-2logo_Strateole2_75x75px_web.png" alt="logo">
         <h2>Plugin Strateole 2</h2>
 
-       <ul>
-            <li class="clickable-size" data-ref="wms1">wms1</li>
-            <li class="clickable-size" data-ref="wms2">wms2</li>
-        </ul>
+        <div  id="bouton">
+        	<ul>
+	            <li class="clickable-size" data-ref="wms1">wms1</li>
+	            <li class="clickable-size" data-ref="wms2">wms2</li>
+	            <li class="clickable-size" data-ref="geo">geo</li>
+	            <!-- <li class="clickable-size" data-ref="test">test</li> -->
+	        </ul>
+	    </div>
+
+	    <div id="date">
+	        <input type="date" id="date" name="date" value="">
+	        <input type="time" id="time" name="time" value="">
+	    </div>
 
         <div class="multiselect">
 		    <div class="selectBox" data-ref="checkboxes">
@@ -46,6 +54,9 @@
         import store from '@windy/store';
 
         console.log('I am mounted to the page');
+
+
+        // CHECKBOXES PART
 
         this.refs.checkboxes.onclick = () => showCheckboxes();
         
@@ -112,8 +123,10 @@
 
 		let geoJSON = null;
 
+		this.refs.geo.onclick = () => loadGeoJson('http://localhost/stage/projet/v1/map.geojson');
+
         const loadGeoJson = url => {
-            removeFpl();
+            removeGeoJson();
 
             fetch(url)
                 .then(response => response.json())
@@ -236,6 +249,45 @@
 			);
         }
 
+        // DATE PART
+
+        function setDate() {
+        	var date = document.getElementsByName('date')[0].value;
+        	var hour = document.getElementsByName('time')[0].value;
+        	var dateSplit = date.split('-');
+        	var hourSplit = hour.split(':');
+        	console.log(hourSplit);
+        	var timestamp = (new Date(dateSplit[0], dateSplit[1]-1, dateSplit[2], hourSplit[0], hourSplit[1])).getTime()+1;
+        	console.log(timestamp);
+        	store.set('timestamp', timestamp);
+        }
+
+        function initDate() {
+        	var dateInit = new Date();
+
+        	// DATE
+        	var currentDate = dateInit.toISOString().substring(0,10);
+		    document.getElementsByName('date')[0].value = currentDate;
+		    document.getElementById('date').onchange = function(){
+		    	console.log('la');
+		    	setDate();
+		    };
+
+		    //HOUR
+
+		    var currentTime = dateInit.toISOString().substring(11,16);
+		    document.getElementById('time').value = currentTime;
+		    document.getElementsByName('time')[0].onchange = function(){
+		    	console.log("ici");
+		    	setDate();
+		    };
+        }
+
+        initDate();
+
+
+        // CLEAR PART
+
         this.refs.clear.onclick = () => clear();
 
         function clear() {
@@ -244,6 +296,9 @@
         	removeGeoJson();
         	removeKml();
         }
+
+     
+
 
 
         this.onclose = () => {
